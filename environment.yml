@@ -1,0 +1,17 @@
+name: multinational-retail-database-centralisation
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - boto3
+  - pandas
+  - PyYAML
+  - Requests
+  - SQLAlchemy
+  - streamlit
+  - psycopg2
+  - pip
+  - pip:
+    - tabula
+    - tabula_py
