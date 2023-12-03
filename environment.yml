@@ -1,4 +1,4 @@
-name: multinational-retail-database-centralisation
+name: mrdc
 channels:
   - defaults
   - conda-forge
@@ -7,11 +7,11 @@ dependencies:
   - boto3
   - pandas
   - PyYAML
-  - Requests
+  - requests
   - SQLAlchemy
   - streamlit
-  - psycopg2
   - pip
   - pip:
-    - tabula
     - tabula_py
+    - psycopg2
+    - python-dotenv
