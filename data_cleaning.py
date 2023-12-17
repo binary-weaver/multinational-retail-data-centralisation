@@ -82,6 +82,7 @@ class DataCleaning:
         try:
             df = df.drop("lat", axis=1)
             df = df.drop("index", axis=1)
+            df.dropna()
             df.continent = df.continent.str.replace("ee", "")
             df = Transformations.clean_upper_or_numeric_rows(df)
             df.address = Transformations.remove_newline_character(df.address)
@@ -250,6 +251,14 @@ class DataCleaning:
         except Exception as error:
             print(f"Error adding weight class column: {error}")
 
+    def change_dim_users_column_types(engine):
+        DataCleaning.alter_column_type(engine, "dim_users_table", "first_name", "VARCHAR(255)")
+        DataCleaning.alter_column_type(engine, "dim_users_table", "last_name", "VARCHAR(255)")
+        DataCleaning.alter_column_type(engine, "dim_users_table", "date_of_birth", "DATE")
+        DataCleaning.alter_column_type(engine, "dim_users_table", "country_code", "VARCHAR(2)")
+        DataCleaning.alter_column_type(engine, "dim_users_table", "user_uuid", "UUID USING user_uuid::uuid")
+        DataCleaning.alter_column_type(engine, "dim_users_table", "join_date", "DATE")
+
     def change_orders_table_column_types(engine):
         """
         Change the data types of columns in the orders_table.
@@ -286,7 +295,7 @@ class DataCleaning:
         DataCleaning.alter_column_type(engine, "dim_products", "still_available", "BOOL USING still_available ='still_available';")
         DataCleaning.alter_column_type(engine, "dim_products", "weight_class", "VARCHAR")
 
-    def change_dim_store_details_datatypes(engine):
+    def change_dim_store_details_column_types(engine):
         """
         Change the data types of columns in the dim_store_details table.
 
@@ -300,9 +309,10 @@ class DataCleaning:
         DataCleaning.alter_column_type(engine, "dim_store_details", "locality", "VARCHAR(255)")
         DataCleaning.alter_column_type(engine, "dim_store_details", "store_code", "VARCHAR")
         DataCleaning.alter_column_type(engine, "dim_store_details", "staff_numbers", "SMALLINT")
-        DataCleaning.alter_column_type(engine, "dim_store_details", "opening_date", "DATE")
-        DataCleaning.alter_column_type(engine, "dim_store_details", "store_type", "VARCHAR(255) NULLABLE")
-        DataCleaning.alter_column_type(engine, "dim_store_details", "latitude", "FLOAT")
+        DataCleaning.alter_column_type(engine, "dim_store_details", "opening_date", "DATE USING opening_date::date")
+        DataCleaning.alter_column_type(engine, "dim_store_details", "store_type", "VARCHAR(255)")
+        DataCleaning.execute_sql_query(engine, text("""UPDATE dim_store_details SET latitude = 0 WHERE latitude = 'N/A';"""))
+        DataCleaning.alter_column_type(engine, "dim_store_details", "latitude", "FLOAT USING latitude::double precision")
         DataCleaning.alter_column_type(engine, "dim_store_details", "country_code", "VARCHAR(2)")
         DataCleaning.alter_column_type(engine, "dim_store_details", "continent", "VARCHAR(255)")
 

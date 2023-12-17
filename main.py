@@ -13,8 +13,7 @@ import traceback
 headers = {"x-api-key": Config.api_key}
 
 def main():
-    """
-    ETL Data Centralisation Tool: Extract, Transform, and Load data into a local database.
+    """ETL Data Centralisation Tool: Extract, Transform, and Load data into a local database.
 
     This script performs data extraction, cleaning, and uploading into a local database based on the specified data type.
 
@@ -61,12 +60,7 @@ def main():
                     df_user_cleaned = DataCleaning.clean_user_data(df_user)
                     # Data Upload
                     dc_local.upload_to_db(df_user_cleaned, "dim_users_table", db_engine_local)     
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "first_name", "VARCHAR(255)")
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "last_name", "VARCHAR(255)")
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "date_of_birth", "DATE")
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "country_code", "VARCHAR(2)")
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "user_uuid", "UUID USING user_uuid::uuid")
-                    DataCleaning.alter_column_type(db_engine_local, "dim_users_table", "join_date", "DATE")
+                    DataCleaning.change_dim_users_column_types(db_engine_local)
                     DataCleaning.add_primary_key(db_engine_local, "dim_users_table", "user_uuid")
                     result = DataCleaning.check_primary_key(db_engine_local, 'dim_users_table', 'user_uuid')
                     print(f"Primary key present: {result}")
@@ -99,7 +93,7 @@ def main():
             # Data Upload
             dc_local.upload_to_db(df_store_cleaned, "dim_store_details", db_engine_local)
             DataCleaning.merge_latitudes(db_engine_local) 
-            DataCleaning.change_dim_store_details_datatypes
+            DataCleaning.change_dim_store_details_column_types(db_engine_local)
             DataCleaning.add_primary_key(db_engine_local, "dim_store_details", "store_code")
            
 
